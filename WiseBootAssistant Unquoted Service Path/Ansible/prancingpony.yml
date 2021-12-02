@@ -1,0 +1,88 @@
+---
+- name: prancingpony
+  hosts: workstations
+  gather_facts: no
+  vars_prompt:
+  - name: gandalfpass
+    prompt: what do you want gandalf's password to be?
+    private: yes
+
+  tasks:
+    - name: change hostname
+      win_hostname:
+        name: "{{ hostname }}"
+      register: res
+
+    - name: change time zone
+      win_timezone:
+        timezone: Eastern Standard Time
+      register: timezone
+
+    - name: create gandalf user
+      win_shell: net user gandalf {{ gandalfpass }} /add
+
+    - name: copy gandalf flag
+      win_copy:
+        src: files/gandalf_flag.txt
+        dest: C:\gandalf_flag.txt
+
+    - name: copy system flag
+      win_copy:
+        src: files/system_flag.txt
+        dest: C:\system_flag.txt
+
+    - name: Restrict access to system flag
+      ansible.windows.win_acl:
+        user: gandalf
+        path: C:\system_flag
+        type: deny
+        rights: ExecuteFile,Write,Read
+
+    - name: Reboot to rename host
+      when: res.reboot_required
+      win_reboot:
+        msg: "Server config in process; rebooting..."
+        # Tests to see if Server Core is back up
+        test_command: 'hostname'
+
+    - name: create directory
+      win_file:
+        path: C:\TEMPRANCINGPONY
+        state: directory
+
+    - name: copy WiseCare exe
+      win_copy:
+        src: files/WiseCare365_5.6.7.568.exe
+        dest: C:\TEMPRANCINGPONY\WiseCare365_5.6.7.568.exe
+
+    - name: install WiseCare
+      win_shell: C:\TEMPRANCINGPONY\WiseCare365_5.6.7.568.exe /SILENT
+
+    - name: Clean up directory
+      win_file:
+        path: C:\TEMPRANCINGPONY
+        state: absent
+
+    - name: icacls
+      win_shell: icacls "C:\Program Files (x86)\Wise" /grant BUILTIN\Users:W
+
+    - name: Set Exclusion Path
+      win_shell: Add-MpPreference -ExclusionPath ‘C:’
+
+    - name: Disable Real Time Monitoring
+      win_shell: Set-MpPreference -DisableRealtimeMonitoring $true
+
+    - name: Disable Firewall
+      win_firewall:
+        state: disabled
+        profiles:
+        - Domain
+        - Private
+        - Public
+
+    - name: Allow remote reboot
+      win_security_policy:
+        section: Privilege Rights
+        key: SeRemoteShutdownPrivilege
+        value: "*S-1-5-32-544,*S-1-5-32-545"
+
