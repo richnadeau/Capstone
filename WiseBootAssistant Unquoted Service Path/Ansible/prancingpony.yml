@@ -6,7 +6,10 @@
   - name: gandalfpass
     prompt: what do you want gandalf's password to be?
     private: yes
-
+  - name: striderpass
+    prompt: what do you want strider's password to be?
+    private: yes
+    
   tasks:
     - name: change hostname
       win_hostname:
@@ -18,23 +21,51 @@
         timezone: Eastern Standard Time
       register: timezone
 
-    - name: create gandalf user
-      win_shell: net user gandalf {{ gandalfpass }} /add
+    - name: High Performance
+      win_power_plan:
+        name: high performance
+
+    - name: Ensure user gandalf is present
+      win_user:
+        name: gandalf
+        password: "{{ gandalfpass }}"
+        state: present
+        groups:
+          - Users
+
+    - name: Create gandalf profile
+      win_user_profile:
+        username: gandalf
+        state: present   
+
+    - name: Ensure admin strider is present
+      win_user:
+        name: strider
+        password: "{{ striderpass }}"
+        state: present
+        groups:
+          - Users
+          - Administrators
+
+    - name: Create strider profile
+      win_user_profile:
+        username: strider
+        state: present 
 
     - name: copy gandalf flag
       win_copy:
         src: files/gandalf_flag.txt
-        dest: C:\gandalf_flag.txt
+        dest: C:\Users\gandalf\user_flag.txt
 
     - name: copy system flag
       win_copy:
         src: files/system_flag.txt
-        dest: C:\system_flag.txt
+        dest: C:\Users\strider\root_flag.txt
 
     - name: Restrict access to system flag
       ansible.windows.win_acl:
         user: gandalf
-        path: C:\system_flag
+        path: C:\Users\Strider\root_flag.txt
         type: deny
         rights: ExecuteFile,Write,Read
 
