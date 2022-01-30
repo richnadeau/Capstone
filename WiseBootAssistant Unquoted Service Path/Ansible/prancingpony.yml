@@ -25,6 +25,11 @@
       win_power_plan:
         name: high performance
 
+    - name: Ensure user champuser is absent
+      win_user:
+        name: champuser
+        state: absent
+
     - name: Ensure user gandalf is present
       win_user:
         name: gandalf
