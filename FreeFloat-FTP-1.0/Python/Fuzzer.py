@@ -23,3 +23,4 @@ while True:
         buffer = buffer + 'A'*100
     except:
         print("[*] Fuzzing crashed at byte : " + str(len(buffer)))
+        sys.exit()
