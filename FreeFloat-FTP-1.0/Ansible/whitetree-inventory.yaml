@@ -3,8 +3,8 @@ windows:
   children:
     workstations:
       hosts:
-        192.168.75.129:
-          hostname: prancingpony
+        192.168.229.130:
+          hostname: whitetree
 
   vars:
     ansible_user: deployer
