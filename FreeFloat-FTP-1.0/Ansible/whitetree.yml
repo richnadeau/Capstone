@@ -1,0 +1,127 @@
+---
+- name: whitetree
+  hosts: workstations
+  gather_facts: no
+  vars_prompt:
+  - name: faramirpass
+    prompt: what do you want faramir's password to be?
+    private: yes
+  - name: denethorpass
+    prompt: what do you want denethor's password to be?
+    private: yes
+    
+  tasks:
+    - name: change hostname
+      win_hostname:
+        name: "{{ hostname }}"
+      register: res
+
+    - name: change time zone
+      win_timezone:
+        timezone: Eastern Standard Time
+      register: timezone
+
+    - name: High Performance
+      win_power_plan:
+        name: high performance
+
+    - name: Ensure user champuser is absent
+      win_user:
+        name: champuser
+        state: absent
+
+    - name: Ensure user faramir is present
+      win_user:
+        name: faramir
+        password: "{{ faramirpass }}"
+        state: present
+        groups:
+          - Users
+
+    - name: Create faramir profile
+      win_user_profile:
+        username: faramir
+        state: present   
+
+    - name: Ensure admin denethor is present
+      win_user:
+        name: denethor
+        password: "{{ denethorpass }}"
+        state: present
+        groups:
+          - Users
+          - Administrators
+
+    - name: Create denethor profile
+      win_user_profile:
+        username: denethor
+        state: present 
+
+    - name: copy faramir flag
+      win_copy:
+        src: files/faramir_flag.txt
+        dest: C:\Users\faramir\user_flag.txt
+
+    - name: copy system flag
+      win_copy:
+        src: files/system_flag.txt
+        dest: C:\Users\strider\root_flag.txt
+
+    - name: copy aragorn meme to strider desktop
+      win_copy:
+        src: files/aragorn.jpg
+        dest: C:\Users\strider\Desktop\aragorn.jpg     
+
+    - name: Restrict access to system flag
+      ansible.windows.win_acl:
+        user: faramir
+        path: C:\Users\Strider\root_flag.txt
+        type: deny
+        rights: ExecuteFile,Write,Read
+
+    - name: Reboot to rename host
+      when: res.reboot_required
+      win_reboot:
+        msg: "Server config in process; rebooting..."
+        # Tests to see if Server Core is back up
+        test_command: 'hostname'
+
+    - name: create directory
+      win_file:
+        path: C:\TEMPWHITETREE
+        state: directory
+
+    - name: copy FreeFloat FTP exe
+      win_copy:
+        src: files\687ef6f72dcbbf5b2506e80a375377fa-freefloatftpserver.zip
+        dest: C:\TEMPWHITETREE\freefloatftpserver.zip
+
+    - name: unzip FreeFloat FTP
+      unarchive: 
+        src: C:\TEMPWHITETREE\freefloatftpserver.zip
+        dest: C:\Program Files\FreeFloatFTP
+
+    - name: Clean up directory
+      win_file:
+        path: C:\TEMPWHITETREE
+        state: absent
+
+    - name: Set Exclusion Path
+      win_shell: Add-MpPreference -ExclusionPath ‘C:’
+
+    - name: Disable Real Time Monitoring
+      win_shell: Set-MpPreference -DisableRealtimeMonitoring $true
+
+    - name: Disable Firewall
+      win_firewall:
+        state: disabled
+        profiles:
+        - Domain
+        - Private
+        - Public
+
+    - name: Allow remote reboot
+      win_security_policy:
+        section: Privilege Rights
+        key: SeRemoteShutdownPrivilege
+        value: "*S-1-5-32-544,*S-1-5-32-545"

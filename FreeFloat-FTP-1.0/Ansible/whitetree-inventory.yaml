@@ -1,0 +1,11 @@
+windows:
+  hosts:
+  children:
+    workstations:
+      hosts:
+        192.168.75.129:
+          hostname: prancingpony
+
+  vars:
+    ansible_user: deployer
+    ansible_shell_type: powershell
