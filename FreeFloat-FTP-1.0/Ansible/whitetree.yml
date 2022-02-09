@@ -75,7 +75,7 @@
         rights: ExecuteFile,Write,Read
 
     - name: unarchive FreeFloat FTP exe
-      win_copy:
+      unarchive:
         src: files/687ef6f72dcbbf5b2506e80a375377fa-freefloatftpserver.zip
         dest: C:\Program Files\
     
@@ -83,7 +83,7 @@
       copy:
         remotesrc: yes
         src: C:\Program Files\freefloatftp\Win32\FTPServer
-        dst: C:\Users\denethor\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
+        dest: C:\Users\denethor\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
 
     - name: Reboot to rename host
       when: res.reboot_required
