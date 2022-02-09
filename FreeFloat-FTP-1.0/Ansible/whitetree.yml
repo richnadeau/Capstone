@@ -81,7 +81,7 @@
 
     - name: copy FreeFloat FTP exe
       win_copy:
-        src: files\687ef6f72dcbbf5b2506e80a375377fa-freefloatftpserver.zip
+        src: files/687ef6f72dcbbf5b2506e80a375377fa-freefloatftpserver.zip
         dest: C:\TEMPWHITETREE\freefloatftpserver.zip
 
     - name: unzip FreeFloat FTP
