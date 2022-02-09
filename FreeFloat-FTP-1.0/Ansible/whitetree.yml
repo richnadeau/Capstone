@@ -59,12 +59,12 @@
 
     - name: copy faramir flag
       win_copy:
-        src: files/faramir_flag.txt
+        src: files/user_flag.txt
         dest: C:\Users\faramir\user_flag.txt
 
-    - name: copy system flag
+    - name: copy root flag
       win_copy:
-        src: files/system_flag.txt
+        src: files/root_flag.txt
         dest: C:\Users\denethor\root_flag.txt 
 
     - name: Restrict access to system flag
