@@ -74,30 +74,16 @@
         type: deny
         rights: ExecuteFile,Write,Read
 
-    - name: create directory
-      win_file:
-        path: C:\TEMPWHITETREE
-        state: directory
-
-    - name: copy FreeFloat FTP exe
+    - name: unarchive FreeFloat FTP exe
       win_copy:
         src: files/687ef6f72dcbbf5b2506e80a375377fa-freefloatftpserver.zip
-        dest: C:\TEMPWHITETREE\freefloatftpserver.zip
-
-    - name: unzip FreeFloat FTP
-      unarchive: 
-        src: C:\TEMPWHITETREE\freefloatftpserver.zip
         dest: C:\Program Files\
     
     - name: copy FreeFloat exe to start up folder for denethor
       copy:
+        remotesrc: yes
         src: C:\Program Files\freefloatftp\Win32\FTPServer
         dst: C:\Users\denethor\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
-
-    - name: Clean up directory
-      win_file:
-        path: C:\TEMPWHITETREE
-        state: absent
 
     - name: Reboot to rename host
       when: res.reboot_required
