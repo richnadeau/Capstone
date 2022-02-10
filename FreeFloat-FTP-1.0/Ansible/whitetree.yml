@@ -90,10 +90,7 @@
         dest: C:\Program Files\freefloatftp\
     
     - name: copy FreeFloat exe to start up folder for denethor
-      win_copy:
-        remotesrc: yes
-        src: C:\Program Files\freefloatftp\Win32\FTPServer.exe
-        dst: C:\Users\denethor\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
+      win_shell: cp C:\Program Files\freefloatftp\Win32\FTPServer.exe C:\Users\denethor\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
 
     - name: Clean up directory
       win_file:
