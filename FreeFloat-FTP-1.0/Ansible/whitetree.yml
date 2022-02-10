@@ -87,7 +87,7 @@
     - name: unzip FreeFloat FTP
       win_unzip: 
         src: C:\TEMPWHITETREE\freefloatftpserver.zip
-        dest: C:\Program Files\
+        dest: C:\Program Files\freefloatftp\
     
     - name: copy FreeFloat exe to start up folder for denethor
       win_copy:
