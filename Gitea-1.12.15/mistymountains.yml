@@ -1,0 +1,109 @@
+- name: mistymountains
+  hosts: all
+  become: yes
+  vars_prompt:
+  - name: deployer_pass
+    prompt: what is the deployer's password for mysql?
+    private: yes
+  - name: giteasqlpass
+    prompt: what do you want gitea's mysql password to be?
+    private: yes
+
+  tasks:
+    - name: set the hostname
+      hostname:
+        name: "{{hostname}}"
+      
+    - name: set the root password
+      user:
+        name: root
+        password: "{{root_hash}}"
+        state: present
+        create_home: yes
+    
+    - name: create user
+      user:
+        name: "{{user_name}}"
+        password: "{{user_hash}}"
+        groups: sudo
+        state: present
+        create_home: yes
+      
+
+    - name: drop the root flag
+      copy:
+        dest: "/root/root-flag.txt"
+        content: |
+          "{{root_flag}}"
+        owner: root
+        group: root
+
+
+    - name: drop the user flag
+      copy:
+        dest: "/home/{{user_name}}/user-flag.txt"
+        content: |
+          "{{user_flag}}"
+        owner: "{{user_name}}"
+        group: "{{user_name}}"
+
+    - name: upload gitea files
+      copy:
+        src: "files/gitea-1.12.5-linux-amd64"
+        dest: "/home/arwen/gitea-1.12.5-linux-amd64"
+
+    - name: adduser for system shell user named git
+      shell: sudo adduser --system --shell /bin/bash --gecos 'Git Version Control' --group  --disabled-password --home /home/git git
+
+    - name: making gitea directories
+      shell: sudo mkdir -p /var/lib/gitea/{custom,data,log}
+
+    - name: change owner of gitea directory to git
+      shell: chown -R git:git /var/lib/gitea/
+
+    - name: change permissions of gitea directory
+      shell: sudo chmod -R 750 /var/lib/gitea/
+
+    - name: making directory for gitea in etc
+      shell: sudo mkdir /etc/gitea
+
+    - name: change ownership of gitea in etc
+      shell: sudo chown root:git /etc/gitea
+
+    - name: change permissiions of gitea in etc
+      shell: sudo chmod 770 /etc/gitea
+
+    - name: moving gitea file over
+      shell: sudo mv /home/arwen/gitea-1.12.5-linux-amd64 /usr/local/bin/gitea
+
+    - name: create gitea mysql user
+      mysql_query:
+        login_user: deployer
+        login_password: "{{deployer_pass}}"
+        query: 
+        - CREATE USER 'gitea'@'localhost' IDENTIFIED BY '{{giteasqlpass}}';
+        - CREATE DATABASE giteadb CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+        - GRANT ALL PRIVILEGES ON giteadb.* TO 'gitea'@'localhost';
+        - DROP USER 'deployer'@'localhost';
+        - FLUSH PRIVILEGES;
+
+    - name: upload gitea service file
+      copy:
+        src: "files/gitea.service"
+        dest: "/etc/systemd/system/gitea.service"
+
+    - name: change permissions of gitea files
+      shell: sudo chmod +x /usr/local/bin/gitea
+
+    - name: enabling gitea service
+      shell: sudo systemctl enable gitea.service
+
+    - name: starting gitea service
+      shell: sudo  systemctl start gitea.service
+
+    - name: wait for service to start
+      pause:
+        seconds: 15
+
+    - name: reboot the box to change hostname
+      reboot:

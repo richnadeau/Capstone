@@ -1,0 +1,12 @@
+linux_targets:
+  hosts:
+    192.168.75.136:
+      hostname: "mistymountains"
+      root_flag: "b4bad683-156c-4570-9bde-27ff0eb7f2b5"
+      user_flag: "4997dbdb-761a-4b0e-95ba-e18d29342ee3"
+      root_hash: "$6$g6Z0tWUyIjQrqOV1$XvH.t/U/A/0nXkUZOtR7ovov9WkYiIj9mNnWy2AUum9m0P3wvq6sULUASF08v6W9ZLXQFOXSlOMAlZ5rJ.QZp/"
+      user_name: "arwen"
+      user_hash: "$6$H66X5OMmbMMzu8VR$q92c0sBRwgESZlOew789yQBcJrZd5vbFwblJXA0EU8yhunTDYMIoIQQDVtgsol6yftRzYHwXJYf4KTmB3oL.Z1"
+
+  vars:
+    ansible_user: deployer
