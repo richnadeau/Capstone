@@ -101,9 +101,51 @@
     - name: starting gitea service
       shell: sudo  systemctl start gitea.service
 
+    - name: copy over curl bash script
+      copy:
+        src: "files/curl.sh"
+        dest: "/home/curl.sh"
+
     - name: wait for service to start
       pause:
-        seconds: 15
+        seconds: 30
+
+    - name: run curl command bash script
+      shell: bash /home/curl.sh
+
+    - name: Update repos cache and install "vsftpd" package
+      apt:
+        name: vsftpd
+        update_cache: yes
+
+    - name: make ftp directory
+      shell: sudo mkdir /var/ftp
+
+    - name: make public ftp directory
+      shell: sudo mkdir /var/ftp/pub
+
+    - name: create backup.txt
+      shell: sudo echo “Hello Arwen, here is your username and password. Make sure to change them after the first login” > /var/ftp/pub/backup.txt
+
+    - name: add more to backup.txt
+      shell: sudo echo “ “ >> /var/ftp/pub/backup.txt
+
+    - name: add username in backup.txt
+      shell: sudo echo “username: arwen” >> /var/ftp/pub/backup.txt
+
+    - name: add password in backup.txt
+      shell: sudo echo “password: Passw0rd%231” >> /var/ftp/pub/backup.txt
+
+    - name: upload vsftpd.conf
+      copy:
+        src: "files/vsftpd.conf"
+        dest: "/etc/vsftpd.conf"
+
+    - name: enable vsftpd
+      shell: sudo systemctl enable vsftpd
+
+    - name: start vsftpd
+      shell: sudo systemctl start vsftpd
 
     - name: reboot the box to change hostname
       reboot:
