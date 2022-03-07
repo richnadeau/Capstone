@@ -111,30 +111,17 @@
         seconds: 30
 
     - name: run curl command bash script
-      shell: bash /home/curl.sh
+      shell: sudo bash /home/curl.sh
 
     - name: Update repos cache and install "vsftpd" package
       apt:
         name: vsftpd
         update_cache: yes
 
-    - name: make ftp directory
-      shell: sudo mkdir /var/ftp
-
-    - name: make public ftp directory
-      shell: sudo mkdir /var/ftp/pub
-
-    - name: create backup.txt
-      shell: sudo echo “Hello Arwen, here is your username and password. Make sure to change them after the first login” > /var/ftp/pub/backup.txt
-
-    - name: add more to backup.txt
-      shell: sudo echo “ “ >> /var/ftp/pub/backup.txt
-
-    - name: add username in backup.txt
-      shell: sudo echo “username: arwen” >> /var/ftp/pub/backup.txt
-
-    - name: add password in backup.txt
-      shell: sudo echo “password: Passw0rd%231” >> /var/ftp/pub/backup.txt
+    - name: upload vsftpd.sh
+      copy:
+        src: "files/vsftpd.sh"
+        dest: "/home/vsftpd.sh"
 
     - name: upload vsftpd.conf
       copy:
@@ -146,6 +133,9 @@
 
     - name: start vsftpd
       shell: sudo systemctl start vsftpd
+
+    - name: remove temp script files
+      shell: sudo rm /home/*.sh
 
     - name: reboot the box to change hostname
       reboot:
