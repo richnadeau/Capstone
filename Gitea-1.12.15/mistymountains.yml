@@ -128,6 +128,9 @@
         src: "files/vsftpd.conf"
         dest: "/etc/vsftpd.conf"
 
+    - name: run vsftpd.sh
+      shell: sudo bash /home/vsftpd.sh
+
     - name: enable vsftpd
       shell: sudo systemctl enable vsftpd
 
