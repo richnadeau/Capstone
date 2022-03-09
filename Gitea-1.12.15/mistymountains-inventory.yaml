@@ -4,9 +4,9 @@ linux_targets:
       hostname: "mistymountains"
       root_flag: "b4bad683-156c-4570-9bde-27ff0eb7f2b5"
       user_flag: "4997dbdb-761a-4b0e-95ba-e18d29342ee3"
-      root_hash: "$6$g6Z0tWUyIjQrqOV1$XvH.t/U/A/0nXkUZOtR7ovov9WkYiIj9mNnWy2AUum9m0P3wvq6sULUASF08v6W9ZLXQFOXSlOMAlZ5rJ.QZp/"
+      root_hash: "$6$qThyIgMvIPg0V2NS$WYdNOnw.h0toQvsk8UQQ.w/5y/doZxNy51Gl6x6WWb3yPk1gu.L6SxnRuBQe95A32c6Z0qMyKmzeqAHFugrGU/"
       user_name: "arwen"
-      user_hash: "$6$H66X5OMmbMMzu8VR$q92c0sBRwgESZlOew789yQBcJrZd5vbFwblJXA0EU8yhunTDYMIoIQQDVtgsol6yftRzYHwXJYf4KTmB3oL.Z1"
+      user_hash: "$6$ag3t/QSihARyuhMA$zY/wO0JUUWSeezsIO6Kuwa584bJqVugPsagZ050n7Fw1oA.7B5GjLA5Zf.lGpghHSXbe/N5iVtHg/iOLxvKeg."
 
   vars:
     ansible_user: deployer
