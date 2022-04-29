@@ -29,6 +29,6 @@ My capstone team and I worked with our Professors, Devin Paden and Joe Eastman, 
 | [nancurunir](https://github.com/richnadeau/Capstone/wiki/Nancurunir-Documentation)  | CVE-2018-12613 | Remote Code Execution |
 | [prancingpony](https://github.com/dbelair-champl/DBCapstone/wiki/Target-2-Documentation)  | 50038 | Unquoted Service Path |
 | [whitetree](https://github.com/richnadeau/Capstone/wiki/FreeFloat-FTP-1.0)  | 46763 | Buffer Overflow |
-| [bree]() | 49390 | Remote Code Execution |
+| bree | 49390 | Remote Code Execution |
 | [mistymountains](https://github.com/richnadeau/Capstone/tree/main/Gitea-1.12.15) | 49571 | Remote Code Execution |
 | [trollshaws](https://github.com/richnadeau/Capstone/wiki/Trollshaws-Documentation) | CVE-2019-10863 | Command Injection |
